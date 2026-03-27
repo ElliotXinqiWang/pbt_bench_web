@@ -1,0 +1,96 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = "PBT-Bench: A benchmark evaluating AI agents on property-based bug discovery in Python libraries.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #080810;
+    --surface: #0f0f1a;
+    --surface-2: #161627;
+    --border: #1e2035;
+    --border-light: #252540;
+    --accent: #00d4aa;
+    --accent-dim: rgba(0, 212, 170, 0.12);
+    --purple: #8b7cf8;
+    --purple-dim: rgba(139, 124, 248, 0.12);
+    --text: #dde2ed;
+    --text-muted: #6b7694;
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  code,
+  pre,
+  kbd {
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  @media (max-width: 640px) {
+    .container {
+      padding: 0 16px;
+    }
+  }
+</style>

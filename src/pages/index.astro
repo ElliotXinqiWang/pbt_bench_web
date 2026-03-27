@@ -1,0 +1,1053 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const GITHUB_URL = "https://github.com/ElliotXinqiWang/pbt-bench";
+
+const libraries = [
+  {
+    category: "Data Structures",
+    libs: ["sortedcontainers", "bidict", "diskcache", "multiset", "portion", "intervaltree", "bintrees", "pyrsistent"],
+  },
+  {
+    category: "Serialization",
+    libs: ["msgpack", "cbor2", "PyYAML", "construct", "jsonschema", "pyasn1"],
+  },
+  {
+    category: "Math & Scientific",
+    libs: ["mpmath", "sympy", "galois", "pint"],
+  },
+  {
+    category: "Parsing & Templates",
+    libs: ["lark", "pyparsing", "pycparser", "parso", "jinja2"],
+  },
+  {
+    category: "Type Systems & Validation",
+    libs: ["attrs", "cattrs", "marshmallow", "pydantic"],
+  },
+  {
+    category: "Utilities & Misc",
+    libs: ["arrow", "pendulum", "networkx", "transitions", "boltons", "toolz", "tomlkit", "more_itertools"],
+  },
+];
+---
+
+<Layout title="PBT-Bench — Benchmark AI Bug Discovery via Property-Based Testing">
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="/" class="logo">PBT-Bench</a>
+      <div class="nav-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#problems">Problems</a>
+        <a href="#install">Install</a>
+        <a href={GITHUB_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="container hero-content">
+        <span class="badge">Work in Progress</span>
+        <h1>
+          Benchmark AI Agents on<br />
+          <span class="accent">Property-Based Bug Discovery</span>
+        </h1>
+        <p class="hero-desc">
+          PBT-Bench evaluates whether AI agents can discover hidden semantic bugs
+          in Python libraries using property-based testing with Hypothesis —
+          guided solely by official API documentation.
+        </p>
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-num">271</span>
+            <span class="stat-label">Problems</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">50</span>
+            <span class="stat-label">Libraries</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">720+</span>
+            <span class="stat-label">Injected Bugs</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">L1–L4</span>
+            <span class="stat-label">Difficulty Levels</span>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a href={GITHUB_URL} class="btn-primary" target="_blank" rel="noopener noreferrer">
+            View on GitHub
+          </a>
+          <a href="#install" class="btn-secondary">Get Started ↓</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT MAKES IT UNIQUE -->
+    <section class="section" id="about">
+      <div class="container">
+        <h2 class="section-title">A different kind of benchmark</h2>
+        <p class="section-desc">
+          Most code benchmarks ask AI to fix a known bug or pass visible test gaps.
+          PBT-Bench asks a harder question: can an agent <em>discover</em> bugs
+          that no one told it about?
+        </p>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🔍</div>
+            <h3>Bugs Invisible to Inspection</h3>
+            <p>
+              Every injected bug survives a 10-minute code review and passes all
+              existing unit tests. Discovery requires systematic semantic reasoning,
+              not grepping the source.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">📚</div>
+            <h3>Documentation-Driven</h3>
+            <p>
+              Agents receive official API documentation as their primary oracle.
+              Bugs hide in the gap between what the docs promise and what the
+              implementation delivers.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Automated F→P Evaluation</h3>
+            <p>
+              The Fail-to-Pass criterion requires zero human judgment: a test must
+              FAIL on the buggy library and PASS on the fixed version. Fully
+              reproducible by anyone.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔒</div>
+            <h3>Hidden Ground Truth</h3>
+            <p>
+              Reference property tests are never shown to agents. Any test
+              function that independently achieves F→P for a bug counts as a
+              discovery.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section alt-bg" id="how-it-works">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-content">
+              <h3>Bug Injection</h3>
+              <p>
+                Semantic bugs are injected into real Python libraries via unified
+                diff patches. The bugs are designed to be undetectable through
+                code inspection and invisible to all existing unit tests — they
+                only surface through systematic property testing.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-content">
+              <h3>Documentation as Oracle</h3>
+              <p>
+                The agent receives official API documentation for the target
+                library. Its task is to infer semantic invariants from the docs:
+                contracts the library promises to uphold. Source code is
+                accessible but intentionally insufficient.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-content">
+              <h3>Property Test Design</h3>
+              <p>
+                The agent writes Hypothesis <code>@given</code> property tests
+                checking semantic contracts — roundtrip consistency,
+                commutativity, idempotency, algebraic laws, and more. Crafting
+                focused input strategies from documentation is the critical
+                challenge.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-content">
+              <h3>F→P Evaluation</h3>
+              <p>
+                Each test function is evaluated independently against each
+                <code>(buggy_lib, fixed_lib)</code> pair. A test "finds" a bug
+                when it FAILs on the buggy version and PASSes on the fixed
+                version. Bug recall is computed per problem.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TWO TRACKS -->
+        <div class="tracks">
+          <h3 class="tracks-title">Two Evaluation Tracks</h3>
+          <div class="track-cards">
+            <div class="track-card">
+              <span class="track-badge baseline">Baseline</span>
+              <h4>Unconstrained Testing</h4>
+              <p>
+                The agent may use any approach: unit tests, code inspection,
+                manual exploration, or arbitrary test generation. This measures
+                what's achievable with current best practices — no Hypothesis
+                required.
+              </p>
+            </div>
+            <div class="track-card">
+              <span class="track-badge pbt">PBT</span>
+              <h4>Property-Based Testing</h4>
+              <p>
+                The agent must use Hypothesis <code>@given</code> decorator with
+                custom input strategies. The key skill is deriving precise
+                strategies from API documentation rather than defaulting to
+                random inputs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM SET -->
+    <section class="section" id="problems">
+      <div class="container">
+        <h2 class="section-title">Problem Set</h2>
+        <p class="section-desc">
+          Problems span 50 Python libraries across diverse domains, each with
+          injected bugs organized into four difficulty levels.
+        </p>
+
+        <div class="lib-grid">
+          {libraries.map((cat) => (
+            <div class="lib-category">
+              <h4>{cat.category}</h4>
+              <div class="lib-tags">
+                {cat.libs.map((lib) => (
+                  <span>{lib}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="subsection-title">Difficulty Levels</h3>
+        <div class="diff-table-wrap">
+          <table class="diff-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Description</th>
+                <th>Example trigger</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="level l1">L1</span></td>
+                <td>Default Hypothesis strategies are sufficient to find the bug</td>
+                <td>Integer boundary overflow (uint16 sign error at [32768, 65535])</td>
+              </tr>
+              <tr>
+                <td><span class="level l2">L2</span></td>
+                <td>A non-default, documentation-derived strategy is required</td>
+                <td>Size thresholds, specific parameter combinations</td>
+              </tr>
+              <tr>
+                <td><span class="level l3">L3</span></td>
+                <td>Cross-function state sequences or algebraic property chains</td>
+                <td>FSM callback ordering, precision thresholds, protocol conformance</td>
+              </tr>
+              <tr>
+                <td><span class="level l4">L4</span></td>
+                <td>External specification or engineering knowledge required</td>
+                <td>DER/OID encoding standards, RFC compliance checks</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="problem-note">
+          Each problem directory includes official API documentation, existing unit tests
+          (all passing on the buggy library), and hidden ground-truth property tests for validation.
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTALLATION -->
+    <section class="section alt-bg" id="install">
+      <div class="container">
+        <h2 class="section-title">Get Started</h2>
+
+        <div class="install-requirements">
+          <p class="req-title">Requirements</p>
+          <ul>
+            <li>Python 3.12</li>
+            <li>
+              <a href="https://github.com/astral-sh/uv" target="_blank" rel="noopener noreferrer">uv</a>
+              package manager
+            </li>
+            <li>Docker (for isolated evaluation environments)</li>
+            <li>An LLM API key — Anthropic, OpenRouter, or compatible</li>
+          </ul>
+        </div>
+
+        <div class="install-steps">
+          <div class="install-step">
+            <p class="step-label">1 &mdash; Clone and install dependencies</p>
+            <pre class="code-block"><code><span class="cm"># Clone the repository</span>
+git clone https://github.com/ElliotXinqiWang/pbt-bench.git
+cd pbt-bench
+
+<span class="cm"># Create a Python 3.12 virtual environment</span>
+uv venv .venv --python 3.12
+
+<span class="cm"># Install the evaluation framework (vendored OpenHands SDK)</span>
+uv pip install \
+    vendor/software-agent-sdk/openhands-sdk \
+    vendor/software-agent-sdk/openhands-tools \
+    vendor/software-agent-sdk/openhands-workspace \
+    vendor/software-agent-sdk/openhands-agent-server</code></pre>
+          </div>
+
+          <div class="install-step">
+            <p class="step-label">2 &mdash; Configure your LLM</p>
+            <pre class="code-block"><code><span class="cm">// eval/llm_config.json</span>
+{
+  <span class="ck">"model"</span>: <span class="cs">"anthropic/claude-sonnet-4-6"</span>,
+  <span class="ck">"api_key"</span>: <span class="cs">"your-api-key-here"</span>
+}</code></pre>
+            <p class="install-note">
+              OpenRouter and local model configs are also supported — see
+              <code>llm_configs/</code> in the repo for examples.
+            </p>
+          </div>
+
+          <div class="install-step">
+            <p class="step-label">3 &mdash; Run the benchmark</p>
+            <pre class="code-block"><code><span class="cm"># Edit MODE, MAX_WORKERS, N_LIMIT at the top of run_eval.sh</span>
+bash run_eval.sh
+
+<span class="cm"># Or run a single track directly:</span>
+.venv/bin/python3 eval/run_pbt.py eval/llm_config.json \
+    --n-limit 5 --max-iterations 40 --note my_first_run</code></pre>
+          </div>
+        </div>
+
+        <div class="output-note">
+          <p class="output-note-title">Output</p>
+          <p>
+            Results are written to <code>eval_outputs/</code> as streaming JSONL — crash-safe and
+            resumable. Each run includes per-problem agent traces, test files written by the agent,
+            and a summary of F→P counts per bug.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span class="footer-logo">PBT-Bench</span>
+        <span class="footer-wip">Work in Progress</span>
+      </div>
+      <div class="footer-right">
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </div>
+    </div>
+  </footer>
+
+</Layout>
+
+<style>
+  /* ============================
+     NAV
+  ============================ */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8, 8, 16, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo:hover {
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 0.875rem;
+  }
+  .nav-links a {
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+  .nav-links a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  /* ============================
+     BUTTONS
+  ============================ */
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 22px;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.18s;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover {
+    background: #00efbe;
+    text-decoration: none;
+  }
+  .btn-secondary {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border-light);
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+    padding: 7px 16px;
+    font-size: 0.875rem;
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ============================
+     HERO
+  ============================ */
+  .hero {
+    padding: 100px 0 88px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 700px;
+    background: radial-gradient(
+      ellipse at 50% 30%,
+      rgba(0, 212, 170, 0.07) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: rgba(255, 180, 0, 0.08);
+    border: 1px solid rgba(255, 180, 0, 0.28);
+    color: #ffb400;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 5vw, 3.1rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: #eef2ff;
+    margin-bottom: 22px;
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .hero-desc {
+    font-size: 1.08rem;
+    color: var(--text-muted);
+    max-width: 620px;
+    margin: 0 auto 44px;
+    line-height: 1.75;
+  }
+  .stats-row {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-width: 100px;
+  }
+  .stat-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ============================
+     SECTIONS (shared)
+  ============================ */
+  .section {
+    padding: 88px 0;
+  }
+  .alt-bg {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #eef2ff;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .section-desc {
+    text-align: center;
+    color: var(--text-muted);
+    max-width: 580px;
+    margin: 0 auto 52px;
+    font-size: 1.02rem;
+    line-height: 1.75;
+  }
+  .section-desc em {
+    color: var(--text);
+    font-style: normal;
+  }
+  .subsection-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin: 56px 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ============================
+     FEATURE CARDS
+  ============================ */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+  .card:hover {
+    border-color: var(--border-light);
+  }
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 14px;
+  }
+  .card h3 {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .card p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ============================
+     HOW IT WORKS — STEPS
+  ============================ */
+  .steps {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .step {
+    display: flex;
+    gap: 24px;
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    transition: background 0.15s;
+  }
+  .step:last-child {
+    border-bottom: none;
+  }
+  .step:hover {
+    background: #1a1a2e;
+  }
+  .step-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent);
+    padding-top: 4px;
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+  .step-content h3 {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin-bottom: 7px;
+  }
+  .step-content p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .step-content code {
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.84em;
+  }
+
+  /* ============================
+     TWO TRACKS
+  ============================ */
+  .tracks {
+    margin-top: 52px;
+  }
+  .tracks-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin-bottom: 16px;
+  }
+  .track-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .track-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+  }
+  .track-badge {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .track-badge.baseline {
+    background: var(--purple-dim);
+    color: var(--purple);
+    border: 1px solid rgba(139, 124, 248, 0.28);
+  }
+  .track-badge.pbt {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(0, 212, 170, 0.28);
+  }
+  .track-card h4 {
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin-bottom: 9px;
+  }
+  .track-card p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .track-card code {
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.84em;
+  }
+
+  /* ============================
+     LIBRARY GRID
+  ============================ */
+  .lib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .lib-category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+  }
+  .lib-category h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 12px;
+  }
+  .lib-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .lib-tags span {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.76rem;
+    padding: 3px 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+
+  /* ============================
+     DIFFICULTY TABLE
+  ============================ */
+  .diff-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+  .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  .diff-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .diff-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .diff-table tr:last-child td {
+    border-bottom: none;
+  }
+  .diff-table tr:hover td {
+    background: var(--surface-2);
+  }
+  .level {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .l1 { background: rgba(0, 212, 170, 0.1); color: #00d4aa; }
+  .l2 { background: rgba(100, 160, 255, 0.1); color: #64a0ff; }
+  .l3 { background: rgba(255, 165, 60, 0.1); color: #ffa53c; }
+  .l4 { background: rgba(255, 90, 90, 0.1); color: #ff5a5a; }
+
+  .problem-note {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ============================
+     INSTALLATION
+  ============================ */
+  .install-requirements {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px 28px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .req-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    min-width: 100px;
+    padding-top: 2px;
+  }
+  .install-requirements ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    flex: 1;
+  }
+  .install-requirements li {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .install-requirements li::before {
+    content: "▸";
+    color: var(--accent);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .install-requirements a {
+    color: var(--accent);
+  }
+
+  .install-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .step-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .code-block {
+    background: #07080f;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    overflow-x: auto;
+    line-height: 1.75;
+    font-size: 0.855rem;
+    color: #c0c8dc;
+    margin: 0;
+  }
+  .code-block .cm { color: #3d4f6e; } /* comment */
+  .code-block .ck { color: #79b8ff; } /* json key */
+  .code-block .cs { color: #9ecbff; } /* json string */
+
+  .install-note {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 9px;
+    line-height: 1.6;
+  }
+  .install-note code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85em;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .output-note {
+    margin-top: 32px;
+    padding: 22px 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+  }
+  .output-note-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .output-note p:last-child {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .output-note code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  /* ============================
+     FOOTER
+  ============================ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0;
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-logo {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    letter-spacing: -0.02em;
+  }
+  .footer-wip {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    background: rgba(255, 180, 0, 0.08);
+    border: 1px solid rgba(255, 180, 0, 0.25);
+    color: #ffb400;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .footer-right a {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+  .footer-right a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ============================
+     RESPONSIVE
+  ============================ */
+  @media (max-width: 768px) {
+    .track-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 72px 0 64px;
+    }
+    .section {
+      padding: 64px 0;
+    }
+    nav .nav-links a:not(.btn-outline) {
+      display: none;
+    }
+    .step {
+      flex-direction: column;
+      gap: 6px;
+      padding: 20px;
+    }
+    .stats-row {
+      gap: 8px;
+    }
+    .stat {
+      padding: 12px 22px;
+    }
+    .install-requirements {
+      flex-direction: column;
+      gap: 14px;
+    }
+  }
+</style>
