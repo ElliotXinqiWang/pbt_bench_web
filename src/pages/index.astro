@@ -5,28 +5,32 @@ const GITHUB_URL = "https://github.com/ElliotXinqiWang/pbt-bench";
 
 const libraries = [
   {
-    category: "Data Structures",
-    libs: ["sortedcontainers", "bidict", "diskcache", "multiset", "portion", "intervaltree", "bintrees", "pyrsistent"],
-  },
-  {
-    category: "Serialization",
-    libs: ["msgpack", "cbor2", "PyYAML", "construct", "jsonschema", "pyasn1"],
+    category: "Date & Time",
+    libs: ["arrow", "pendulum", "dateutil", "icalendar"],
   },
   {
     category: "Math & Scientific",
     libs: ["mpmath", "sympy", "galois", "pint"],
   },
   {
-    category: "Parsing & Templates",
-    libs: ["lark", "pyparsing", "pycparser", "parso", "jinja2"],
+    category: "Type Systems",
+    libs: ["attrs", "cattrs", "marshmallow"],
   },
   {
-    category: "Type Systems & Validation",
-    libs: ["attrs", "cattrs", "marshmallow", "pydantic"],
+    category: "Parsing & Documents",
+    libs: ["parso", "pyparsing", "pypdf", "html5lib"],
   },
   {
-    category: "Utilities & Misc",
-    libs: ["arrow", "pendulum", "networkx", "transitions", "boltons", "toolz", "tomlkit", "more_itertools"],
+    category: "Data Structures",
+    libs: ["sortedcontainers", "bidict", "portion", "cachetools", "toolz"],
+  },
+  {
+    category: "Config & Graphs",
+    libs: ["tomlkit", "networkx", "transitions", "boltons", "openpyxl"],
+  },
+  {
+    category: "Encoding & Algorithms",
+    libs: ["msgpack", "pyasn1", "codeforces"],
   },
 ];
 ---
@@ -66,15 +70,15 @@ const libraries = [
         </p>
         <div class="stats-row">
           <div class="stat">
-            <span class="stat-num">271</span>
+            <span class="stat-num">61</span>
             <span class="stat-label">Problems</span>
           </div>
           <div class="stat">
-            <span class="stat-num">50</span>
+            <span class="stat-num">28</span>
             <span class="stat-label">Libraries</span>
           </div>
           <div class="stat">
-            <span class="stat-num">720+</span>
+            <span class="stat-num">230+</span>
             <span class="stat-label">Injected Bugs</span>
           </div>
           <div class="stat">
@@ -232,8 +236,9 @@ const libraries = [
       <div class="container">
         <h2 class="section-title">Problem Set</h2>
         <p class="section-desc">
-          Problems span 50 Python libraries across diverse domains, each with
-          injected bugs organized into four difficulty levels.
+          The current evaluated set spans 28 Python libraries across diverse domains.
+          Each problem contains injected semantic bugs organized into four difficulty levels.
+          Evaluated on Claude Sonnet 4.6 and GLM-5 across Baseline and PBT tracks.
         </p>
 
         <div class="lib-grid">
