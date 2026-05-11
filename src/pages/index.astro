@@ -79,7 +79,7 @@ const results = [
     <section class="hero">
       <div class="hero-glow"></div>
       <div class="container hero-content">
-        <span class="badge">NeurIPS 2026 Submission</span>
+        <span class="badge">Research Benchmark</span>
         <h1>
           Benchmarking AI Agents on<br />
           <span class="accent">Property-Based Bug Discovery</span>
@@ -466,14 +466,12 @@ const results = [
 
         <div class="install-steps">
           <div class="install-step">
-            <p class="step-label">1 &mdash; Download and install dependencies</p>
-            <pre class="code-block"><code><span class="cm"># Download the repository from the Code link above, then:</span>
-cd pbt-bench
+            <p class="step-label">1 &mdash; Install</p>
+            <pre class="code-block"><code>cd pbt-bench
 
-<span class="cm"># Create a Python 3.12 virtual environment</span>
+<span class="cm"># Create virtual environment and install dependencies</span>
 uv venv .venv --python 3.12
-
-<span class="cm"># Install the evaluation framework (vendored OpenHands SDK)</span>
+uv pip install -r requirements.txt
 uv pip install \
     vendor/software-agent-sdk/openhands-sdk \
     vendor/software-agent-sdk/openhands-tools \
@@ -483,34 +481,37 @@ uv pip install \
 
           <div class="install-step">
             <p class="step-label">2 &mdash; Configure your LLM</p>
-            <pre class="code-block"><code><span class="cm">// eval/llm_config.json</span>
-&#123;
-  <span class="ck">"model"</span>: <span class="cs">"anthropic/claude-sonnet-4-6"</span>,
-  <span class="ck">"api_key"</span>: <span class="cs">"your-api-key-here"</span>
-&#125;</code></pre>
+            <pre class="code-block"><code>cp llm_configs/llm_config_example.json eval/llm_config.json
+<span class="cm"># then edit eval/llm_config.json and fill in your API key</span></code></pre>
             <p class="install-note">
-              OpenRouter and local model configs are supported — see
-              <code>llm_configs/</code> in the repository for examples.
+              Supported: Anthropic, OpenRouter, or any OpenAI-compatible endpoint.
+              See <code>llm_configs/</code> for format examples.
             </p>
           </div>
 
           <div class="install-step">
-            <p class="step-label">3 &mdash; Run the benchmark</p>
-            <pre class="code-block"><code><span class="cm"># Run a single track directly:</span>
+            <p class="step-label">3 &mdash; Run</p>
+            <pre class="code-block"><code><span class="cm"># PBT mode — first 5 problems, 40 agent iterations each</span>
 .venv/bin/python3 eval/run_pbt.py eval/llm_config.json \
-    --n-limit 5 --max-iterations 40 --note my_first_run
+    --n-limit 5 --max-iterations 40 --note my_run
 
-<span class="cm"># Or run both tracks in parallel (edit MODE/MAX_WORKERS first):</span>
-bash run_eval.sh</code></pre>
+<span class="cm"># Baseline mode</span>
+.venv/bin/python3 eval/run_baseline.py eval/llm_config.json \
+    --max-iterations 50 --note my_run
+
+<span class="cm"># Or run both tracks via the shell script</span>
+bash scripts/run_eval.sh</code></pre>
           </div>
         </div>
 
         <div class="output-note">
           <p class="output-note-title">Output</p>
           <p>
-            Results are written to <code>eval_outputs/</code> as streaming JSONL — crash-safe and
-            resumable. Each run includes per-problem agent traces, the test file written by the agent,
-            and a per-bug F→P summary. Use <code>eval/display.py</code> to aggregate results across runs.
+            Results stream to <code>experiments/eval_outputs/&lt;mode&gt;/&lt;model&gt;_&lt;note&gt;/&lt;timestamp&gt;/</code>
+            as JSONL — crash-safe and resumable. Each run directory contains
+            <code>output.jsonl</code> (per-problem results), <code>summary.json</code> (aggregate metrics),
+            and <code>_workspaces/&lt;ID&gt;/pbt_test.py</code> (the agent's test file).
+            Use <code>eval/display.py</code> to view live progress during a run.
           </p>
         </div>
       </div>
@@ -523,13 +524,16 @@ bash run_eval.sh</code></pre>
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="footer-logo">PBT-Bench</span>
-        <span class="footer-venue">NeurIPS 2026</span>
       </div>
       <div class="footer-right">
         <a href={PAPER_URL} target="_blank" rel="noopener noreferrer">Paper ↗</a>
         <a href={DATA_URL} target="_blank" rel="noopener noreferrer">Dataset ↗</a>
         <a href={CODE_URL} target="_blank" rel="noopener noreferrer">Code ↗</a>
       </div>
+    </div>
+    <div class="container blind-note">
+      Author information, institution affiliations, and repository ownership are withheld
+      for double-blind peer review. Code and data are served via anonymized mirrors.
     </div>
   </footer>
 
@@ -653,9 +657,9 @@ bash run_eval.sh</code></pre>
   .badge {
     display: inline-block;
     padding: 4px 14px;
-    background: rgba(139, 124, 248, 0.08);
-    border: 1px solid rgba(139, 124, 248, 0.28);
-    color: var(--purple);
+    background: rgba(0, 212, 170, 0.06);
+    border: 1px solid rgba(0, 212, 170, 0.22);
+    color: var(--accent);
     border-radius: 100px;
     font-size: 0.78rem;
     font-weight: 600;
@@ -1302,6 +1306,16 @@ bash run_eval.sh</code></pre>
   .footer-right a:hover {
     color: var(--accent);
     text-decoration: none;
+  }
+  .blind-note {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    text-align: center;
+    line-height: 1.6;
   }
 
   /* ============================
