@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 
 const CODE_URL = "https://anonymous.4open.science/r/pbt-bench-nips2026-60D2/README.md";
 const PAPER_URL = "https://openreview.net/attachment?id=wota1ZN4By&name=pdf";
+const DATA_URL = "https://huggingface.co/datasets/pbtbench-team/pbt-bench/tree/main";
 
 const libraries = [
   {
@@ -65,6 +66,9 @@ const results = [
         <a href={CODE_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
           Code →
         </a>
+        <a href={DATA_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
+          Dataset →
+        </a>
       </div>
     </div>
   </nav>
@@ -112,9 +116,12 @@ const results = [
             Read Paper
           </a>
           <a href={CODE_URL} class="btn-secondary" target="_blank" rel="noopener noreferrer">
-            View Code
+            Code
           </a>
-          <a href="#results" class="btn-secondary">See Results ↓</a>
+          <a href={DATA_URL} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+            Dataset
+          </a>
+          <a href="#results" class="btn-secondary">Results ↓</a>
         </div>
       </div>
     </section>
@@ -298,28 +305,74 @@ const results = [
             <span class="finding-num">01</span>
             <div>
               <h4>PBT scaffolding helps mid-capability models most</h4>
-              <p>Recall gains range from +24.5 pp (Qwen 3.6 Plus) to −8.0 pp (Grok 4.1 Fast). The prompt substitutes for a capability weaker models lack — not complementing a skill stronger models already carry.</p>
+              <p>
+                Recall gains (Δ = PBT − Baseline) range from
+                <strong>+24.5 pp</strong> (Qwen 3.6 Plus) and <strong>+22.9 pp</strong> (Qwen 3.5-30B-A3B)
+                down to <strong>−8.0 pp</strong> (Grok 4.1 Fast).
+                For the four models with the largest gaps, |Δ| exceeds the sum of their 95% bootstrap CIs,
+                so those signs are statistically robust.
+                The pattern is consistent with the PBT prompt substituting for a capability weaker models
+                lack — not complementing a skill stronger models already carry.
+              </p>
             </div>
           </div>
           <div class="finding">
             <span class="finding-num">02</span>
             <div>
-              <h4>Problem coverage and full recall diverge</h4>
-              <p>The top model finds at least one bug in 92.7% of problems (PBT) but achieves full recall on only 67.0% — co-located bugs are the persistent gap. No cell exceeds 70% perfect rate.</p>
+              <h4>Coverage and full recall diverge; the benchmark is not saturated</h4>
+              <p>
+                The top cell (Sonnet 4.6 Baseline) achieves <strong>98.0% problem coverage</strong>
+                but only <strong>43.0% perfect recall</strong> — it frequently finds one bug but misses
+                co-located bugs. Switching to PBT trades coverage (92.7%) for a large gain in perfect recall (67.0%),
+                consistent with its instruction to write multiple focused tests per bug.
+                No cell exceeds 70% perfect rate.
+              </p>
             </div>
           </div>
           <div class="finding">
             <span class="finding-num">03</span>
             <div>
-              <h4>16-cell ensemble reaches 99.5% bug coverage</h4>
-              <p>Two bugs remain out of reach of any model within the 200-example budget. Within-model mode complementarity (PBT + Baseline, same architecture) accounts for 65% of ensemble headroom.</p>
+              <h4>Ensemble upper bound: 99.5% with 16 cells</h4>
+              <p>
+                The best single cell (Sonnet 4.6 PBT) reliably covers <strong>317 of 365 bugs (86.8%)</strong>.
+                Adding Sonnet 4.6 Baseline lifts union coverage to <strong>95.1%</strong>;
+                the full 16-cell ensemble reaches <strong>99.5%</strong>.
+                Within-model mode complementarity (PBT + Baseline, same architecture) accounts for
+                <strong>65% of ensemble headroom</strong> — suggesting the two modes elicit
+                categorically different testing strategies even within a single model.
+                Two L3 bugs remain out of reach of any cell within the 200-example budget.
+              </p>
             </div>
           </div>
           <div class="finding">
             <span class="finding-num">04</span>
             <div>
+              <h4>L1–L3 labels track empirical hardness</h4>
+              <p>
+                Averaged across all eight models, mean recall descends monotonically:
+                <strong>L1 66% → L2 60% → L3 51%</strong>.
+                This ordering holds in 15 of 16 cells.
+                For weaker models, the PBT benefit itself decreases with difficulty:
+                Qwen 3.5-30B-A3B gains +35.2 / +25.4 / +14.8 pp on L1/L2/L3,
+                suggesting the scaffold substitutes for constraint-reasoning on easy bugs
+                but cannot close the gap on L3 protocol violations.
+              </p>
+            </div>
+          </div>
+          <div class="finding">
+            <span class="finding-num">05</span>
+            <div>
               <h4>Failure modes are categorically different between tracks</h4>
-              <p>Baseline failures concentrate on incorrect assertions (59%) and overly-concrete tests (32%). PBT failures shift to <code>assume()</code> misuse (31%) and wrong strategy range (31%) — both are prompt-actionable.</p>
+              <p>
+                Over 20 sampled failures per cell, Baseline failures concentrate on
+                <strong>Incorrect Assertion (59%)</strong> and <strong>Overly Concrete Test (32%)</strong> —
+                correct-looking tests aimed at the wrong invariant.
+                PBT failures shift to search pathologies:
+                <strong><code>assume()</code> misuse (31%)</strong>, where the agent excludes the bug's
+                trigger region via over-filtering, and <strong>Wrong Strategy Range (31%)</strong>,
+                where the input distribution misses the narrow trigger.
+                Both failure modes are prompt-actionable without architectural changes.
+              </p>
             </div>
           </div>
         </div>
@@ -474,6 +527,7 @@ bash run_eval.sh</code></pre>
       </div>
       <div class="footer-right">
         <a href={PAPER_URL} target="_blank" rel="noopener noreferrer">Paper ↗</a>
+        <a href={DATA_URL} target="_blank" rel="noopener noreferrer">Dataset ↗</a>
         <a href={CODE_URL} target="_blank" rel="noopener noreferrer">Code ↗</a>
       </div>
     </div>
