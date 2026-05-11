@@ -1,41 +1,54 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-const GITHUB_URL = "https://github.com/ElliotXinqiWang/pbt-bench";
+const CODE_URL = "https://anonymous.4open.science/r/pbt-bench-nips2026-60D2/README.md";
+const PAPER_URL = "https://openreview.net/attachment?id=wota1ZN4By&name=pdf";
 
 const libraries = [
   {
     category: "Date & Time",
-    libs: ["arrow", "pendulum", "dateutil", "icalendar"],
-  },
-  {
-    category: "Math & Scientific",
-    libs: ["mpmath", "sympy", "galois", "pint"],
-  },
-  {
-    category: "Type Systems",
-    libs: ["attrs", "cattrs", "marshmallow"],
-  },
-  {
-    category: "Parsing & Documents",
-    libs: ["parso", "pyparsing", "pypdf", "html5lib"],
+    libs: ["arrow", "pendulum", "dateutil", "babel", "icalendar"],
   },
   {
     category: "Data Structures",
-    libs: ["sortedcontainers", "bidict", "portion", "cachetools", "toolz"],
+    libs: ["sortedcontainers", "bidict", "portion", "cachetools", "toolz",
+           "bintrees", "intervaltree", "multiset", "pyrsistent", "more_itertools", "diskcache"],
   },
   {
-    category: "Config & Graphs",
-    libs: ["tomlkit", "networkx", "transitions", "boltons", "openpyxl"],
+    category: "Serialization & Encoding",
+    libs: ["msgpack", "cbor2", "pyasn1", "yaml", "construct", "tomlkit"],
   },
   {
-    category: "Encoding & Algorithms",
-    libs: ["msgpack", "pyasn1", "codeforces"],
+    category: "Type Systems & Schemas",
+    libs: ["attrs", "cattrs", "marshmallow", "jsonschema"],
   },
+  {
+    category: "Numerics & Math",
+    libs: ["mpmath", "sympy", "galois", "pint"],
+  },
+  {
+    category: "Graph & State Machines",
+    libs: ["transitions", "networkx", "boltons"],
+  },
+  {
+    category: "Parsing & Documents",
+    libs: ["parso", "pyparsing", "pypdf", "html5lib", "lark", "pycparser", "openpyxl"],
+  },
+];
+
+const results = [
+  { model: "Sonnet 4.6",       pbtRecall: "83.4%", baseRecall: "76.7%", delta: "+6.7", perfect: "67.0%", highlight: true },
+  { model: "Qwen 3.6 Plus",    pbtRecall: "78.0%", baseRecall: "53.5%", delta: "+24.5", perfect: "56.0%", highlight: false },
+  { model: "GLM 5.1",          pbtRecall: "72.1%", baseRecall: "66.6%", delta: "+5.5",  perfect: "63.0%", highlight: false },
+  { model: "Gemini 3 Flash",   pbtRecall: "62.8%", baseRecall: "56.2%", delta: "+6.6",  perfect: "37.0%", highlight: false },
+  { model: "DeepSeek V3.2",    pbtRecall: "61.0%", baseRecall: "64.2%", delta: "−3.2",  perfect: "38.7%", highlight: false },
+  { model: "Step 3.5 Flash",   pbtRecall: "58.1%", baseRecall: "37.8%", delta: "+20.3", perfect: "41.0%", highlight: false },
+  { model: "Qwen 3.5-30B-A3B", pbtRecall: "54.3%", baseRecall: "31.4%", delta: "+22.9", perfect: "25.7%", highlight: false },
+  { model: "Grok 4.1 Fast",    pbtRecall: "42.1%", baseRecall: "50.1%", delta: "−8.0",  perfect: "21.0%", highlight: false },
 ];
 ---
 
-<Layout title="PBT-Bench — Benchmark AI Bug Discovery via Property-Based Testing">
+<Layout title="PBT-Bench — Benchmarking AI Agents on Property-Based Bug Discovery">
 
   <!-- NAV -->
   <nav>
@@ -43,10 +56,14 @@ const libraries = [
       <a href="/" class="logo">PBT-Bench</a>
       <div class="nav-links">
         <a href="#how-it-works">How It Works</a>
+        <a href="#results">Results</a>
         <a href="#problems">Problems</a>
-        <a href="#install">Install</a>
-        <a href={GITHUB_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
-          GitHub →
+        <a href="#install">Get Started</a>
+        <a href={PAPER_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
+          Paper →
+        </a>
+        <a href={CODE_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
+          Code →
         </a>
       </div>
     </div>
@@ -58,39 +75,46 @@ const libraries = [
     <section class="hero">
       <div class="hero-glow"></div>
       <div class="container hero-content">
-        <span class="badge">Work in Progress</span>
+        <span class="badge">NeurIPS 2026 Submission</span>
         <h1>
-          Benchmark AI Agents on<br />
+          Benchmarking AI Agents on<br />
           <span class="accent">Property-Based Bug Discovery</span>
         </h1>
         <p class="hero-desc">
           PBT-Bench evaluates whether AI agents can discover hidden semantic bugs
-          in Python libraries using property-based testing with Hypothesis —
-          guided solely by official API documentation.
+          in real Python libraries using property-based testing with Hypothesis —
+          guided solely by official API documentation, without any knowledge of the bugs.
         </p>
         <div class="stats-row">
           <div class="stat">
-            <span class="stat-num">61</span>
+            <span class="stat-num">100</span>
             <span class="stat-label">Problems</span>
           </div>
           <div class="stat">
-            <span class="stat-num">28</span>
+            <span class="stat-num">40</span>
             <span class="stat-label">Libraries</span>
           </div>
           <div class="stat">
-            <span class="stat-num">230+</span>
+            <span class="stat-num">365</span>
             <span class="stat-label">Injected Bugs</span>
           </div>
           <div class="stat">
-            <span class="stat-num">L1–L4</span>
+            <span class="stat-num">L1–L3</span>
             <span class="stat-label">Difficulty Levels</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">8</span>
+            <span class="stat-label">Models Evaluated</span>
           </div>
         </div>
         <div class="hero-cta">
-          <a href={GITHUB_URL} class="btn-primary" target="_blank" rel="noopener noreferrer">
-            View on GitHub
+          <a href={PAPER_URL} class="btn-primary" target="_blank" rel="noopener noreferrer">
+            Read Paper
           </a>
-          <a href="#install" class="btn-secondary">Get Started ↓</a>
+          <a href={CODE_URL} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+            View Code
+          </a>
+          <a href="#results" class="btn-secondary">See Results ↓</a>
         </div>
       </div>
     </section>
@@ -116,11 +140,11 @@ const libraries = [
           </div>
           <div class="card">
             <div class="card-icon">📚</div>
-            <h3>Documentation-Driven</h3>
+            <h3>Documentation as the Sole Oracle</h3>
             <p>
-              Agents receive official API documentation as their primary oracle.
-              Bugs hide in the gap between what the docs promise and what the
-              implementation delivers.
+              Agents receive official API documentation only. Bugs hide in the gap
+              between what the docs promise and what the implementation delivers.
+              No bug descriptions, no hints.
             </p>
           </div>
           <div class="card">
@@ -128,17 +152,17 @@ const libraries = [
             <h3>Automated F→P Evaluation</h3>
             <p>
               The Fail-to-Pass criterion requires zero human judgment: a test must
-              FAIL on the buggy library and PASS on the fixed version. Fully
-              reproducible by anyone.
+              FAIL on the buggy library and PASS on the fixed version. Per-bug,
+              per-function scoring. Fully reproducible.
             </p>
           </div>
           <div class="card">
             <div class="card-icon">🔒</div>
             <h3>Hidden Ground Truth</h3>
             <p>
-              Reference property tests are never shown to agents. Any test
-              function that independently achieves F→P for a bug counts as a
-              discovery.
+              Reference property tests are never shown to agents. Any independent
+              test that achieves F→P for a specific bug counts as a discovery —
+              no pattern matching to a reference solution.
             </p>
           </div>
         </div>
@@ -157,9 +181,10 @@ const libraries = [
               <h3>Bug Injection</h3>
               <p>
                 Semantic bugs are injected into real Python libraries via unified
-                diff patches. The bugs are designed to be undetectable through
-                code inspection and invisible to all existing unit tests — they
-                only surface through systematic property testing.
+                diff patches, at least two call-chain layers below the public API
+                surface. Each bug violates a documented invariant, passes all
+                existing unit tests, and has a precisely characterized trigger
+                region — making it discoverable only through informed property testing.
               </p>
             </div>
           </div>
@@ -168,10 +193,11 @@ const libraries = [
             <div class="step-content">
               <h3>Documentation as Oracle</h3>
               <p>
-                The agent receives official API documentation for the target
-                library. Its task is to infer semantic invariants from the docs:
-                contracts the library promises to uphold. Source code is
-                accessible but intentionally insufficient.
+                The agent receives official API documentation as its only oracle.
+                Its task is to infer semantic invariants from the docs —
+                contracts the library promises to uphold — and design Hypothesis
+                input strategies that concentrate probability mass on the trigger
+                region. Source code is accessible but insufficient for localization.
               </p>
             </div>
           </div>
@@ -182,9 +208,10 @@ const libraries = [
               <p>
                 The agent writes Hypothesis <code>@given</code> property tests
                 checking semantic contracts — roundtrip consistency,
-                commutativity, idempotency, algebraic laws, and more. Crafting
-                focused input strategies from documentation is the critical
-                challenge.
+                commutativity, idempotency, algebraic laws, cross-API protocol
+                invariants, and more. The key challenge is crafting focused input
+                strategies from documentation rather than defaulting to unconstrained
+                random search.
               </p>
             </div>
           </div>
@@ -194,9 +221,10 @@ const libraries = [
               <h3>F→P Evaluation</h3>
               <p>
                 Each test function is evaluated independently against each
-                <code>(buggy_lib, fixed_lib)</code> pair. A test "finds" a bug
-                when it FAILs on the buggy version and PASSes on the fixed
-                version. Bug recall is computed per problem.
+                <code>(buggy_lib, fixed_lib)</code> pair. A bug is found when
+                at least one test FAILs on the buggy version and PASSes on the
+                version with only that bug reversed. Bug-level recall and
+                problem-level coverage are both reported.
               </p>
             </div>
           </div>
@@ -210,20 +238,20 @@ const libraries = [
               <span class="track-badge baseline">Baseline</span>
               <h4>Unconstrained Testing</h4>
               <p>
-                The agent may use any approach: unit tests, code inspection,
-                manual exploration, or arbitrary test generation. This measures
-                what's achievable with current best practices — no Hypothesis
-                required.
+                The agent may use any testing approach. No framework is prescribed —
+                unit tests, ad-hoc scripts, or property tests all count. This
+                measures what's achievable with current best practices and serves
+                as the comparison baseline.
               </p>
             </div>
             <div class="track-card">
               <span class="track-badge pbt">PBT</span>
               <h4>Property-Based Testing</h4>
               <p>
-                The agent must use Hypothesis <code>@given</code> decorator with
-                custom input strategies. The key skill is deriving precise
-                strategies from API documentation rather than defaulting to
-                random inputs.
+                The agent must use Hypothesis <code>@given</code> with custom
+                input strategies and a compact property taxonomy (Roundtrip,
+                Model-oracle, Invariant, Boundary). The scaffold eliminates
+                framework-choice overhead and focuses effort on strategy design.
               </p>
             </div>
           </div>
@@ -231,14 +259,81 @@ const libraries = [
       </div>
     </section>
 
+    <!-- RESULTS -->
+    <section class="section" id="results">
+      <div class="container">
+        <h2 class="section-title">Results</h2>
+        <p class="section-desc">
+          4,800 agent trajectories across 8 models × 2 prompt modes × 3 independent runs.
+          Bug-level recall averaged over three runs on all 100 problems.
+        </p>
+
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>PBT Recall</th>
+                <th>Baseline Recall</th>
+                <th>Δ (pp)</th>
+                <th>Perfect Rate (PBT)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((r) => (
+                <tr class={r.highlight ? "highlight-row" : ""}>
+                  <td class="model-name">{r.model}</td>
+                  <td class="recall-val">{r.pbtRecall}</td>
+                  <td class="recall-val muted">{r.baseRecall}</td>
+                  <td class={`delta-val ${r.delta.startsWith("+") ? "pos" : "neg"}`}>{r.delta}</td>
+                  <td class="recall-val muted">{r.perfect}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="findings">
+          <div class="finding">
+            <span class="finding-num">01</span>
+            <div>
+              <h4>PBT scaffolding helps mid-capability models most</h4>
+              <p>Recall gains range from +24.5 pp (Qwen 3.6 Plus) to −8.0 pp (Grok 4.1 Fast). The prompt substitutes for a capability weaker models lack — not complementing a skill stronger models already carry.</p>
+            </div>
+          </div>
+          <div class="finding">
+            <span class="finding-num">02</span>
+            <div>
+              <h4>Problem coverage and full recall diverge</h4>
+              <p>The top model finds at least one bug in 92.7% of problems (PBT) but achieves full recall on only 67.0% — co-located bugs are the persistent gap. No cell exceeds 70% perfect rate.</p>
+            </div>
+          </div>
+          <div class="finding">
+            <span class="finding-num">03</span>
+            <div>
+              <h4>16-cell ensemble reaches 99.5% bug coverage</h4>
+              <p>Two bugs remain out of reach of any model within the 200-example budget. Within-model mode complementarity (PBT + Baseline, same architecture) accounts for 65% of ensemble headroom.</p>
+            </div>
+          </div>
+          <div class="finding">
+            <span class="finding-num">04</span>
+            <div>
+              <h4>Failure modes are categorically different between tracks</h4>
+              <p>Baseline failures concentrate on incorrect assertions (59%) and overly-concrete tests (32%). PBT failures shift to <code>assume()</code> misuse (31%) and wrong strategy range (31%) — both are prompt-actionable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- PROBLEM SET -->
-    <section class="section" id="problems">
+    <section class="section alt-bg" id="problems">
       <div class="container">
         <h2 class="section-title">Problem Set</h2>
         <p class="section-desc">
-          The current evaluated set spans 28 Python libraries across diverse domains.
-          Each problem contains injected semantic bugs organized into four difficulty levels.
-          Evaluated on Claude Sonnet 4.6 and GLM-5 across Baseline and PBT tracks.
+          100 problems across 40 real Python libraries in 7 domains. Each problem contains
+          one or more injected semantic bugs (365 total, mean 3.65 per problem)
+          organized into three difficulty levels.
         </p>
 
         <div class="lib-grid">
@@ -260,44 +355,46 @@ const libraries = [
             <thead>
               <tr>
                 <th>Level</th>
+                <th>Count</th>
                 <th>Description</th>
-                <th>Example trigger</th>
+                <th>Trigger requirement</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><span class="level l1">L1</span></td>
-                <td>Default Hypothesis strategies are sufficient to find the bug</td>
-                <td>Integer boundary overflow (uint16 sign error at [32768, 65535])</td>
+                <td class="count-val">87</td>
+                <td>Single-constraint bugs. Default Hypothesis strategies suffice or a single doc-derived constraint is needed.</td>
+                <td>One input range, size class, or structural property</td>
               </tr>
               <tr>
                 <td><span class="level l2">L2</span></td>
-                <td>A non-default, documentation-derived strategy is required</td>
-                <td>Size thresholds, specific parameter combinations</td>
+                <td class="count-val">184</td>
+                <td>Multi-constraint triggers requiring simultaneous satisfaction of several documentation-derived conditions.</td>
+                <td>Specific value range <em>and</em> structural constraints <em>and</em> operation ordering</td>
               </tr>
               <tr>
                 <td><span class="level l3">L3</span></td>
-                <td>Cross-function state sequences or algebraic property chains</td>
-                <td>FSM callback ordering, precision thresholds, protocol conformance</td>
-              </tr>
-              <tr>
-                <td><span class="level l4">L4</span></td>
-                <td>External specification or engineering knowledge required</td>
-                <td>DER/OID encoding standards, RFC compliance checks</td>
+                <td class="count-val">94</td>
+                <td>Cross-function or cross-operation protocol violations requiring stateful or metamorphic tests.</td>
+                <td>Invariant spans multiple API calls; requires sequences or metamorphic checks</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="problem-note">
-          Each problem directory includes official API documentation, existing unit tests
-          (all passing on the buggy library), and hidden ground-truth property tests for validation.
+          Each problem directory contains official API documentation (the agent's only oracle),
+          existing unit tests (all passing on the buggy library), reversible per-bug patches,
+          and hidden ground-truth property tests used only for infrastructure validation.
+          A three-stage QA pipeline — automated checks, reference-model gate, and manual adversarial
+          review — ensures every accepted bug is semantically meaningful, stealthy, and PBT-testable.
         </div>
       </div>
     </section>
 
     <!-- INSTALLATION -->
-    <section class="section alt-bg" id="install">
+    <section class="section" id="install">
       <div class="container">
         <h2 class="section-title">Get Started</h2>
 
@@ -309,16 +406,15 @@ const libraries = [
               <a href="https://github.com/astral-sh/uv" target="_blank" rel="noopener noreferrer">uv</a>
               package manager
             </li>
-            <li>Docker (for isolated evaluation environments)</li>
+            <li>Docker (for isolated evaluation containers)</li>
             <li>An LLM API key — Anthropic, OpenRouter, or compatible</li>
           </ul>
         </div>
 
         <div class="install-steps">
           <div class="install-step">
-            <p class="step-label">1 &mdash; Clone and install dependencies</p>
-            <pre class="code-block"><code><span class="cm"># Clone the repository</span>
-git clone https://github.com/ElliotXinqiWang/pbt-bench.git
+            <p class="step-label">1 &mdash; Download and install dependencies</p>
+            <pre class="code-block"><code><span class="cm"># Download the repository from the Code link above, then:</span>
 cd pbt-bench
 
 <span class="cm"># Create a Python 3.12 virtual environment</span>
@@ -340,19 +436,19 @@ uv pip install \
   <span class="ck">"api_key"</span>: <span class="cs">"your-api-key-here"</span>
 &#125;</code></pre>
             <p class="install-note">
-              OpenRouter and local model configs are also supported — see
-              <code>llm_configs/</code> in the repo for examples.
+              OpenRouter and local model configs are supported — see
+              <code>llm_configs/</code> in the repository for examples.
             </p>
           </div>
 
           <div class="install-step">
             <p class="step-label">3 &mdash; Run the benchmark</p>
-            <pre class="code-block"><code><span class="cm"># Edit MODE, MAX_WORKERS, N_LIMIT at the top of run_eval.sh</span>
-bash run_eval.sh
-
-<span class="cm"># Or run a single track directly:</span>
+            <pre class="code-block"><code><span class="cm"># Run a single track directly:</span>
 .venv/bin/python3 eval/run_pbt.py eval/llm_config.json \
-    --n-limit 5 --max-iterations 40 --note my_first_run</code></pre>
+    --n-limit 5 --max-iterations 40 --note my_first_run
+
+<span class="cm"># Or run both tracks in parallel (edit MODE/MAX_WORKERS first):</span>
+bash run_eval.sh</code></pre>
           </div>
         </div>
 
@@ -360,8 +456,8 @@ bash run_eval.sh
           <p class="output-note-title">Output</p>
           <p>
             Results are written to <code>eval_outputs/</code> as streaming JSONL — crash-safe and
-            resumable. Each run includes per-problem agent traces, test files written by the agent,
-            and a summary of F→P counts per bug.
+            resumable. Each run includes per-problem agent traces, the test file written by the agent,
+            and a per-bug F→P summary. Use <code>eval/display.py</code> to aggregate results across runs.
           </p>
         </div>
       </div>
@@ -374,10 +470,11 @@ bash run_eval.sh
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="footer-logo">PBT-Bench</span>
-        <span class="footer-wip">Work in Progress</span>
+        <span class="footer-venue">NeurIPS 2026</span>
       </div>
       <div class="footer-right">
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        <a href={PAPER_URL} target="_blank" rel="noopener noreferrer">Paper ↗</a>
+        <a href={CODE_URL} target="_blank" rel="noopener noreferrer">Code ↗</a>
       </div>
     </div>
   </footer>
@@ -502,9 +599,9 @@ bash run_eval.sh
   .badge {
     display: inline-block;
     padding: 4px 14px;
-    background: rgba(255, 180, 0, 0.08);
-    border: 1px solid rgba(255, 180, 0, 0.28);
-    color: #ffb400;
+    background: rgba(139, 124, 248, 0.08);
+    border: 1px solid rgba(139, 124, 248, 0.28);
+    color: var(--purple);
     border-radius: 100px;
     font-size: 0.78rem;
     font-weight: 600;
@@ -526,7 +623,7 @@ bash run_eval.sh
   .hero-desc {
     font-size: 1.08rem;
     color: var(--text-muted);
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto 44px;
     line-height: 1.75;
   }
@@ -542,11 +639,11 @@ bash run_eval.sh
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 14px 30px;
+    padding: 14px 28px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    min-width: 100px;
+    min-width: 90px;
   }
   .stat-num {
     font-size: 1.5rem;
@@ -591,7 +688,7 @@ bash run_eval.sh
   .section-desc {
     text-align: center;
     color: var(--text-muted);
-    max-width: 580px;
+    max-width: 600px;
     margin: 0 auto 52px;
     font-size: 1.02rem;
     line-height: 1.75;
@@ -756,6 +853,132 @@ bash run_eval.sh
   }
 
   /* ============================
+     RESULTS TABLE
+  ============================ */
+  .results-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  .results-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .results-table td {
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+  .results-table tr:last-child td {
+    border-bottom: none;
+  }
+  .results-table tr:hover td {
+    background: var(--surface-2);
+  }
+  .highlight-row td {
+    background: rgba(0, 212, 170, 0.04);
+  }
+  .highlight-row:hover td {
+    background: rgba(0, 212, 170, 0.07) !important;
+  }
+  .model-name {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 0.875rem;
+  }
+  .recall-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.84rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .recall-val.muted {
+    color: var(--text-muted);
+  }
+  .delta-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.84rem;
+    font-weight: 600;
+  }
+  .delta-val.pos { color: var(--accent); }
+  .delta-val.neg { color: #ff6b6b; }
+  .count-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+  }
+
+  /* ============================
+     FINDINGS
+  ============================ */
+  .findings {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .finding {
+    display: flex;
+    gap: 24px;
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background 0.15s;
+  }
+  .finding:last-child {
+    border-bottom: none;
+  }
+  .finding:hover {
+    background: var(--surface-2);
+  }
+  .finding-num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    padding-top: 3px;
+    min-width: 22px;
+    flex-shrink: 0;
+  }
+  .finding h4 {
+    font-size: 0.93rem;
+    font-weight: 600;
+    color: #eef2ff;
+    margin-bottom: 6px;
+  }
+  .finding p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .finding code {
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.84em;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  /* ============================
      LIBRARY GRID
   ============================ */
   .lib-grid {
@@ -765,7 +988,7 @@ bash run_eval.sh
     margin-bottom: 8px;
   }
   .lib-category {
-    background: var(--surface);
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 20px 22px;
@@ -787,7 +1010,7 @@ bash run_eval.sh
     font-family: "JetBrains Mono", monospace;
     font-size: 0.76rem;
     padding: 3px 8px;
-    background: var(--surface-2);
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--text-muted);
@@ -830,6 +1053,10 @@ bash run_eval.sh
   .diff-table tr:hover td {
     background: var(--surface-2);
   }
+  .diff-table em {
+    font-style: normal;
+    color: var(--text);
+  }
   .level {
     display: inline-block;
     padding: 2px 10px;
@@ -842,17 +1069,16 @@ bash run_eval.sh
   .l1 { background: rgba(0, 212, 170, 0.1); color: #00d4aa; }
   .l2 { background: rgba(100, 160, 255, 0.1); color: #64a0ff; }
   .l3 { background: rgba(255, 165, 60, 0.1); color: #ffa53c; }
-  .l4 { background: rgba(255, 90, 90, 0.1); color: #ff5a5a; }
 
   .problem-note {
     margin-top: 20px;
-    padding: 16px 20px;
-    background: var(--surface);
+    padding: 18px 22px;
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     font-size: 0.875rem;
     color: var(--text-muted);
-    line-height: 1.65;
+    line-height: 1.7;
   }
 
   /* ============================
@@ -926,9 +1152,9 @@ bash run_eval.sh
     color: #c0c8dc;
     margin: 0;
   }
-  .code-block .cm { color: #3d4f6e; } /* comment */
-  .code-block .ck { color: #79b8ff; } /* json key */
-  .code-block .cs { color: #9ecbff; } /* json string */
+  .code-block .cm { color: #3d4f6e; }
+  .code-block .ck { color: #79b8ff; }
+  .code-block .cs { color: #9ecbff; }
 
   .install-note {
     font-size: 0.82rem;
@@ -999,16 +1225,20 @@ bash run_eval.sh
     color: var(--text-muted);
     letter-spacing: -0.02em;
   }
-  .footer-wip {
+  .footer-venue {
     font-size: 0.72rem;
     font-weight: 600;
     padding: 2px 10px;
-    background: rgba(255, 180, 0, 0.08);
-    border: 1px solid rgba(255, 180, 0, 0.25);
-    color: #ffb400;
+    background: rgba(139, 124, 248, 0.08);
+    border: 1px solid rgba(139, 124, 248, 0.25);
+    color: var(--purple);
     border-radius: 100px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+  .footer-right {
+    display: flex;
+    gap: 20px;
   }
   .footer-right a {
     font-size: 0.875rem;
@@ -1044,11 +1274,16 @@ bash run_eval.sh
       gap: 6px;
       padding: 20px;
     }
+    .finding {
+      flex-direction: column;
+      gap: 6px;
+      padding: 20px;
+    }
     .stats-row {
       gap: 8px;
     }
     .stat {
-      padding: 12px 22px;
+      padding: 12px 20px;
     }
     .install-requirements {
       flex-direction: column;
