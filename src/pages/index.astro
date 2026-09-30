@@ -60,6 +60,7 @@ const results = [
         <a href="#results">Results</a>
         <a href="#problems">Problems</a>
         <a href="#install">Get Started</a>
+        <a href="#citation">Cite</a>
         <a href={PAPER_URL} class="btn-outline" target="_blank" rel="noopener noreferrer">
           Paper →
         </a>
@@ -79,7 +80,7 @@ const results = [
     <section class="hero">
       <div class="hero-glow"></div>
       <div class="container hero-content">
-        <span class="badge">Research Benchmark</span>
+        <span class="badge">Accepted at NeurIPS 2026 &middot; Evaluations &amp; Datasets Track</span>
         <h1>
           Benchmarking AI Agents on<br />
           <span class="accent">Property-Based Testing</span>
@@ -509,6 +510,24 @@ bash scripts/run_eval.sh</code></pre>
       </div>
     </section>
 
+    <!-- CITATION -->
+    <section class="section alt-bg" id="citation">
+      <div class="container">
+        <h2 class="section-title">Citation</h2>
+        <p class="section-desc">
+          PBT-Bench is accepted at <strong>NeurIPS 2026</strong> (Track on Evaluations and Datasets).
+          If you use the benchmark, please cite:
+        </p>
+        <pre class="code-block"><code>@inproceedings&#123;jing2026pbtbench,
+  title     = &#123;&#123;PBT-Bench&#125;: Benchmarking AI Agents on Property-Based Testing&#125;,
+  author    = &#123;Jing, Lucas and Wang, Xinqi and Zhang, Liao and Du, Simon S.&#125;,
+  booktitle = &#123;Advances in Neural Information Processing Systems (NeurIPS 2026), Track on Evaluations and Datasets&#125;,
+  year      = &#123;2026&#125;,
+  url       = &#123;https://arxiv.org/abs/2605.15229&#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
   </main>
 
   <!-- FOOTER -->
@@ -516,6 +535,7 @@ bash scripts/run_eval.sh</code></pre>
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="footer-logo">PBT-Bench</span>
+        <span class="footer-note">NeurIPS 2026 &middot; Track on Evaluations and Datasets</span>
       </div>
       <div class="footer-right">
         <a href={PAPER_URL} target="_blank" rel="noopener noreferrer">Paper ↗</a>
@@ -1202,6 +1222,11 @@ bash scripts/run_eval.sh</code></pre>
   .code-block .ck { color: #79b8ff; }
   .code-block .cs { color: #9ecbff; }
 
+  .section-desc strong { color: var(--text); font-weight: 600; }
+  .footer-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
   .install-note {
     font-size: 0.82rem;
     color: var(--text-muted);
